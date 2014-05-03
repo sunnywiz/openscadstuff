@@ -9,12 +9,11 @@ module ThingToSlice() {
 	    its going to slice */
 
 top=1;  // z
-bottom=-1;  // -z
+bottom=-3;  // -z
 front=-1;  // -y
-back=2;  // +y
+back=3;  // +y
 left=-1;  // x
 right=1; // -x
-
 
 
 /* 3.  Set this up to run ShowMe instead of SliceMe and inspect where the slices would
@@ -27,11 +26,12 @@ right=1; // -x
  *     Set spacer to control how far apart things should be.  */
 
 spacer = max(top-bottom,front-back,right-left)*2;
-SliceEverything();     // with F6.  Could be really slow. 
+// SliceEverything();     // with F6.  Could be really slow. 
 
 // or one at a time: 
 // SliceCore(); 
-
+SliceRight(); 
+SliceFront(); 
 
 /* ============== Stuff below this line is what makes it work ================= */
 
@@ -54,13 +54,7 @@ module SliceEverything() {
 	SliceCore(); 
 
 	// +X
-	translate([spacer,0,0])
-   	rotate([0,-90,0])
-		translate([-right,0,0]) 
-		intersection() { 
-			ThingToSlice(); 
-		   rightSlicer();
-	   }
+	SliceRight(); 
 
 	// -X
 	translate([-spacer,0,0])
@@ -81,13 +75,7 @@ module SliceEverything() {
 	}
  	
 	// -Y 
-	translate([0,-spacer,0])
-	rotate([-90,0,0])
-	translate([0,-front,0])
-	intersection() { 
-		ThingToSlice(); 
-		frontSlicer(); 
-	} 
+	SliceFront(); 
 
 	// +Z
 	translate([-spacer,+spacer,0])
@@ -114,6 +102,27 @@ module SliceCore() {
 			ThingToSlice();
 			box(left,right,front,back,bottom,top);
 		}; 
+}
+
+module SliceRight() { 
+	translate([spacer,0,0])
+   	rotate([0,-90,0])
+		translate([-right,0,0]) 
+		intersection() { 
+			ThingToSlice(); 
+		   rightSlicer();
+	   }
+}
+
+module SliceFront() 
+{
+	translate([0,-spacer,0])
+	rotate([-90,0,0])
+	translate([0,-front,0])
+	intersection() { 
+		ThingToSlice(); 
+		frontSlicer(); 
+	} 
 }
 
 module box(left,right,front,back,bottom,top)
